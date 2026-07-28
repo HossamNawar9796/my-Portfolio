@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Technology Academy - Bowling Challenge</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="fx-canvas"></canvas>
+
+    <header class="app-header">
+        <div class="header-logo">
+            <svg class="robot-icon" viewBox="0 0 100 100">
+                <rect x="20" y="30" width="60" height="50" rx="15" fill="#00D2FF" stroke="#FFF" stroke-width="4"/>
+                <circle cx="40" cy="50" r="8" fill="#FFF"/>
+                <circle cx="40" cy="50" r="4" fill="#003566"/>
+                <circle cx="60" cy="50" r="8" fill="#FFF"/>
+                <circle cx="60" cy="50" r="4" fill="#003566"/>
+                <path d="M 40 68 Q 50 78 60 68" stroke="#FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <rect x="45" y="15" width="10" height="15" fill="#F72585" rx="5"/>
+                <circle cx="50" cy="12" r="8" fill="#FFD166" class="glow-yellow"/>
+            </svg>
+            <h1>FTA Bowling</h1>
+        </div>
+        <div class="header-controls">
+            <button id="btn-theme" class="control-btn" title="Toggle Theme">
+                <span class="btn-icon">🌓</span>
+            </button>
+            <button id="btn-sound" class="control-btn" title="Toggle Sound">
+                <span id="sound-icon" class="btn-icon">🔊</span>
+            </button>
+            <button id="btn-fullscreen" class="control-btn" title="Toggle Fullscreen">
+                <span class="btn-icon">🖥️</span>
+            </button>
+            <button id="btn-reset" class="control-btn reset-btn" title="Reset Tournament">
+                <span class="btn-icon">🔄</span> Reset
+            </button>
+        </div>
+    </header>
+
+    <div class="progress-container">
+        <div class="progress-line">
+            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+        <div class="steps-wrapper">
+            <div class="step-node active" id="step-node-1" data-step="1">
+                <div class="step-num">1</div>
+                <div class="step-label">Players</div>
+            </div>
+            <div class="step-node" id="step-node-2" data-step="2">
+                <div class="step-num">2</div>
+                <div class="step-label">Wheel Spin</div>
+            </div>
+            <div class="step-node" id="step-node-3" data-step="3">
+                <div class="step-num">3</div>
+                <div class="step-label">Photos</div>
+            </div>
+            <div class="step-node" id="step-node-4" data-step="4">
+                <div class="step-num">4</div>
+                <div class="step-label">Match Play</div>
+            </div>
+            <div class="step-node" id="step-node-5" data-step="5">
+                <div class="step-num">5</div>
+                <div class="step-label">Champion</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="live-leaderboard" class="live-leaderboard hidden">
+        <div class="lbl-title">🏆 Live Scores</div>
+        <div class="lbl-teams">
+            <div class="lbl-team" id="lbl-team-a">
+                <span class="lbl-team-name">Team Alpha</span>
+                <span class="lbl-team-score" id="lbl-score-a">0</span>
+            </div>
+            <div class="lbl-team" id="lbl-team-b">
+                <span class="lbl-team-name">Team Beta</span>
+                <span class="lbl-team-score" id="lbl-score-b">0</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-viewport">
+
+        <section id="screen-intro" class="screen-panel active">
+            <div class="intro-card glass">
+                <div class="intro-decoration">
+                    <div class="floating-pin-left">🎳</div>
+                    <div class="floating-pin-right">🎳</div>
+                    <div class="robot-avatar">🤖</div>
+                </div>
+                <h2 class="intro-title">Future Technology Academy</h2>
+                <h3 class="intro-subtitle">Bowling Challenge</h3>
+                <p class="intro-description">"Let's see who will become today's Bowling Champion!"</p>
+                <button id="btn-start-tournament" class="action-btn massivePulse">
+                    <span class="btn-emoji">▶</span> Start Tournament
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-step1" class="screen-panel">
+            <div class="glass step-card">
+                <h2 class="section-title">✏️ Register Your Champions</h2>
+                <p class="section-subtitle">Enter the names of the 7 competing players below</p>
+                <div class="player-inputs-grid">
+                    <div class="input-group">
+                        <label for="p1">Player 1</label>
+                        <input type="text" id="p1" placeholder="Enter name..." value="Alex">
+                    </div>
+                    <div class="input-group">
+                        <label for="p2">Player 2</label>
+                        <input type="text" id="p2" placeholder="Enter name..." value="Bella">
+                    </div>
+                    <div class="input-group">
+                        <label for="p3">Player 3</label>
+                        <input type="text" id="p3" placeholder="Enter name..." value="Charlie">
+                    </div>
+                    <div class="input-group">
+                        <label for="p4">Player 4</label>
+                        <input type="text" id="p4" placeholder="Enter name..." value="Dani">
+                    </div>
+                    <div class="input-group">
+                        <label for="p5">Player 5</label>
+                        <input type="text" id="p5" placeholder="Enter name..." value="Ethan">
+                    </div>
+                    <div class="input-group">
+                        <label for="p6">Player 6</label>
+                        <input type="text" id="p6" placeholder="Enter name..." value="Fiona">
+                    </div>
+                    <div class="input-group">
+                        <label for="p7">Player 7</label>
+                        <input type="text" id="p7" placeholder="Enter name..." value="Gabe">
+                    </div>
+                </div>
+                <button id="btn-confirm-players" class="action-btn">
+                    🎳 Start Team Selection
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-step2" class="screen-panel">
+            <div class="wheel-screen-layout">
+                <div class="wheel-column glass">
+                    <h2 class="section-title">🎡 Wheel of Fortune</h2>
+                    <p class="section-subtitle">Spin the wheel to allocate players to teams dynamically!</p>
+                    <div class="wheel-wrapper">
+                        <div class="wheel-pointer">👇</div>
+                        <canvas id="wheel-canvas" width="400" height="400"></canvas>
+                        <button id="btn-spin-wheel" class="spin-btn-overlay">SPIN</button>
+                    </div>
+                </div>
+
+                <div class="teams-allocation-column">
+                    <div class="team-panel team-a-panel glass">
+                        <h3 class="team-a-header">🔴 Team Alpha (4 Players)</h3>
+                        <div class="team-list" id="team-a-list">
+                            <div class="empty-placeholder">Awaiting players...</div>
+                        </div>
+                    </div>
+                    <div class="team-panel team-b-panel glass">
+                        <h3 class="team-b-header">🔵 Team Beta (3 Players)</h3>
+                        <div class="team-list" id="team-b-list">
+                            <div class="empty-placeholder">Awaiting players...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-step3" class="screen-panel">
+            <h2 class="section-title">📸 Photo Booth & Team Lineups</h2>
+            <p class="section-subtitle">Smile and strike a robot pose! Take live photos of all players.</p>
+
+            <div class="extra-player-card glass">
+                <h3>⚖️ Team Beta Balancing Rule</h3>
+                <p>Team Beta has only 3 players. Choose one player to throw an extra Frame!</p>
+                <select id="extra-player-select" class="custom-select">
+                    </select>
+                <div class="bonus-badge-desc">⭐ Selected Bonus Player will play the Extra Frame.</div>
+            </div>
+
+            <div class="team-lineups-grid">
+                <div class="team-card-board glass team-a-border">
+                    <h3 class="team-title-banner a-banner">🔴 Team Alpha</h3>
+                    <div class="player-photo-list" id="team-a-photos">
+                        </div>
+                </div>
+
+                <div class="team-card-board glass team-b-border">
+                    <h3 class="team-title-banner b-banner">🔵 Team Beta</h3>
+                    <div class="player-photo-list" id="team-b-photos">
+                        </div>
+                </div>
+            </div>
+
+            <button id="btn-proceed-match" class="action-btn center-btn margin-top-lg">
+                ▶ Start Match Mode
+            </button>
+        </section>
+
+        <section id="screen-step4" class="screen-panel">
+            <div class="match-screen-layout">
+                <div class="match-arena-card glass">
+                    <div id="match-countdown" class="match-countdown hidden">3</div>
+
+                    <div id="arena-player-card" class="arena-player-card active-turn-glow">
+                        <div class="arena-badge">🎳 NOW ROLLING...</div>
+                        <div class="arena-photo-wrapper">
+                            <img id="arena-photo" src="" alt="Player Profile">
+                            <span class="arena-turn-indicator">🎳 Your Turn!</span>
+                        </div>
+                        <h2 id="arena-player-name" class="arena-player-name">Player Name</h2>
+                        <h4 id="arena-player-team" class="arena-player-team">Team Name</h4>
+                    </div>
+
+                    <div class="match-controls-inputs">
+                        <h3 class="input-prompt">Enter Pinfall Scores</h3>
+                        <div class="inputs-row">
+                            <div class="score-input-box">
+                                <label for="score-att-1">Attempt 1</label>
+                                <input type="number" id="score-att-1" min="0" max="10" placeholder="0-10">
+                            </div>
+                            <div class="score-input-box">
+                                <label for="score-att-2">Attempt 2</label>
+                                <input type="number" id="score-att-2" min="0" max="10" placeholder="0-10">
+                            </div>
+                        </div>
+                        <div class="button-row">
+                            <button id="btn-submit-score" class="action-btn">Submit Frame Score 🎯</button>
+                        </div>
+                        <div id="motivational-message" class="motivational-message">Get Ready to Roll!</div>
+                    </div>
+                </div>
+
+                <div class="match-scoreboards-column">
+                    <div class="live-energy-card glass">
+                        <h3>⚡ Team Energy Bars</h3>
+                        <div class="energy-bar-group">
+                            <span class="energy-label">Team Alpha:</span>
+                            <div class="energy-track">
+                                <div id="energy-bar-a" class="energy-fill fill-a" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="energy-bar-group">
+                            <span class="energy-label">Team Beta:</span>
+                            <div class="energy-track">
+                                <div id="energy-bar-b" class="energy-fill fill-b" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scoreboard-mini-tables">
+                        <div class="mini-score-card glass">
+                            <h4>🔴 Team Alpha Scoreboard</h4>
+                            <table class="mini-table" id="table-score-a">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Att 1</th>
+                                        <th>Att 2</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+                        <div class="mini-score-card glass">
+                            <h4>🔵 Team Beta Scoreboard</h4>
+                            <table class="mini-table" id="table-score-b">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Att 1</th>
+                                        <th>Att 2</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-step5" class="screen-panel">
+            <div class="celebration-screen-layout">
+                <div class="victory-banner-card glass scale-up-center">
+                    <div class="banner-badge">🏆 TOURNAMENT CHAMPIONS!</div>
+                    <h1 id="champion-team-announcement" class="champion-team-announcement">TEAM ALPHA WINS!</h1>
+                    <div class="champion-trophy-display">🏆</div>
+                </div>
+
+                <div class="celebration-grid">
+                    <div class="podium-card glass">
+                        <h3>🥇 Top Individual Players</h3>
+                        <div class="podium-container">
+                            <div class="podium-spot spot-second">
+                                <div class="podium-avatar" id="podium-photo-2">👤</div>
+                                <div class="podium-name" id="podium-name-2">Player 2</div>
+                                <div class="podium-score" id="podium-score-2">0 pts</div>
+                                <div class="podium-block">🥈 2nd</div>
+                            </div>
+                            <div class="podium-spot spot-first">
+                                <div class="podium-badge">👑</div>
+                                <div class="podium-avatar" id="podium-photo-1">👤</div>
+                                <div class="podium-name" id="podium-name-1">Player 1</div>
+                                <div class="podium-score" id="podium-score-1">0 pts</div>
+                                <div class="podium-block">🥇 1st</div>
+                            </div>
+                            <div class="podium-spot spot-third">
+                                <div class="podium-avatar" id="podium-photo-3">👤</div>
+                                <div class="podium-name" id="podium-name-3">Player 3</div>
+                                <div class="podium-score" id="podium-score-3">0 pts</div>
+                                <div class="podium-block">🥉 3rd</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid glass">
+                        <h3>📊 Tournament Records</h3>
+                        <div class="stats-cards-wrapper">
+                            <div class="stat-mini-card">
+                                <span class="stat-val" id="stat-high-score">0</span>
+                                <span class="stat-label">Highest Score</span>
+                            </div>
+                            <div class="stat-mini-card">
+                                <span class="stat-val" id="stat-total-pins">0</span>
+                                <span class="stat-label">Total Pins Hit</span>
+                            </div>
+                            <div class="stat-mini-card">
+                                <span class="stat-val" id="stat-avg-score">0</span>
+                                <span class="stat-label">Average Score</span>
+                            </div>
+                            <div class="stat-mini-card">
+                                <div class="stat-val" id="stat-best-photo">📸</div>
+                                <span class="stat-label">Coolest Shot</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="certificate-printable-area" id="certificate-node">
+                    <div class="cert-border">
+                        <div class="cert-watermark">🤖🎳</div>
+                        <div class="cert-header">FUTURE TECHNOLOGY ACADEMY</div>
+                        <div class="cert-title">BOWLING TOURNAMENT CHAMPIONSHIP</div>
+                        <div class="cert-present">This Certificate is proudly awarded to the amazing team</div>
+                        <div class="cert-team-name" id="cert-winner-team-name">TEAM ALPHA</div>
+                        <div class="cert-congrats">For demonstrating outstanding sportsmanship, strategic precision, and amazing team coordination!</div>
+                        <div class="cert-footer">
+                            <div class="cert-signature">
+                                <span class="sig-line">___________________________</span>
+                                <span class="sig-title">Academy Robot Coach</span>
+                            </div>
+                            <div class="cert-date-box">
+                                <span id="cert-current-date">July 2026</span>
+                                <span class="sig-title">Championship Date</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="celebration-actions-row margin-top-lg">
+                    <button id="btn-print-certificate" class="action-btn alt-btn">
+                        🖨️ Print Victory Certificate
+                    </button>
+                    <button id="btn-play-again" class="action-btn massivePulse">
+                        🔄 Start Play Again!
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="overlay-strike" class="overlay-splash hidden">
+        <div class="strike-assets-wrapper">
+            <div class="splash-bowling-ball">⚽</div>
+            <div class="splash-pins-group">
+                <span class="splash-pin">🎳</span>
+                <span class="splash-pin">🎳</span>
+                <span class="splash-pin">🎳</span>
+            </div>
+            <h1 class="splash-alert-text text-glow-red">🔥 STRIKE!! 🔥</h1>
+        </div>
+    </div>
+
+    <div id="overlay-spare" class="overlay-splash hidden">
+        <div class="strike-assets-wrapper">
+            <h1 class="splash-alert-text text-glow-blue">⭐ SPARE! ⭐</h1>
+        </div>
+    </div>
+
+    <div id="camera-modal" class="modal-backdrop hidden">
+        <div class="modal-card glass scale-up-center">
+            <h3>📷 Robotic Photo Booth</h3>
+            <p>Get ready to smile, Cadet!</p>
+            <div class="camera-stream-wrapper">
+                <video id="webcam-feed" autoplay playsinline width="320" height="240"></video>
+                <canvas id="snapshot-canvas" width="320" height="240" style="display:none;"></canvas>
+            </div>
+            <div class="camera-actions-row">
+                <button id="btn-camera-snap" class="modal-btn action-btn">📸 SNAP!</button>
+                <button id="btn-camera-close" class="modal-btn cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
