@@ -54,6 +54,15 @@ body {
     transition: background-color 0.4s ease, color 0.4s ease;
     overflow-x: hidden;
     cursor: none; /* For custom cursor */
+    /* Prevent any element from exceeding viewport width */
+    width: 100%;
+    max-width: 100vw;
+}
+
+/* FIX: Ensure images and media never overflow their containers */
+img, video, canvas {
+    max-width: 100%;
+    height: auto;
 }
 
 h1, h2, h3, h4 {
@@ -93,9 +102,10 @@ ul {
 /* Animated Background */
 .bg-animation {
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
+    top: 0; left: 0; width: 100%; height: 100vh;
     z-index: -1;
     overflow: hidden;
+    /* FIX: Use 100% instead of 100vw to avoid overflow from scrollbar difference */
 }
 .glow-orb {
     position: absolute;
@@ -190,6 +200,10 @@ ul {
 .content {
     margin-left: var(--sidebar-width);
     padding: 0 5%;
+    /* FIX: Ensure content doesn't overflow viewport */
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -202,6 +216,9 @@ ul {
     border-radius: 20px;
     padding: 2.5rem;
     transition: var(--transition-smooth);
+    /* FIX: Prevent glass cards from overflowing on small screens */
+    width: 100%;
+    max-width: 100%;
 }
 .glass-card:hover {
     border-color: rgba(var(--primary-rgb), 0.5);
@@ -279,6 +296,10 @@ ul {
     min-height: 100vh;
     padding: 6rem 0;
     display: flex; flex-direction: column; justify-content: center;
+    /* FIX: Ensure sections don't cause horizontal overflow */
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 .section-header { margin-bottom: 4rem; }
 .section-header h2 { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -288,8 +309,11 @@ ul {
 .hero-section {
     flex-direction: row; align-items: center; justify-content: space-between;
     gap: 4rem;
+    /* FIX: Ensure hero doesn't overflow */
+    width: 100%;
+    max-width: 100%;
 }
-.hero-content { flex: 1; }
+.hero-content { flex: 1; /* FIX: Allow hero content to shrink */ min-width: 0; }
 .greeting { color: var(--text-sec); font-size: 1.2rem; margin-bottom: 0.5rem; font-family: 'Outfit'; font-weight: 400; }
 .main-heading { font-size: 5rem; line-height: 1.1; margin-bottom: 1rem; }
 .typewriter-container {
@@ -298,10 +322,10 @@ ul {
 }
 .separator { color: var(--primary); }
 .hero-desc { font-size: 1.1rem; line-height: 1.8; color: var(--text-sec); margin-bottom: 3rem; max-width: 600px; }
-.hero-btns { display: flex; gap: 1rem; }
+.hero-btns { display: flex; gap: 1rem; /* FIX: Allow buttons to wrap on small screens */ flex-wrap: wrap; }
 
 /* AI Video Placeholder */
-.hero-visual { flex: 1; display: flex; justify-content: flex-end; }
+.hero-visual { flex: 1; display: flex; justify-content: flex-end; /* FIX: Allow visual to shrink */ min-width: 0; }
 .video-placeholder {
     width: 100%; max-width: 400px; aspect-ratio: 4/5;
     position: relative; border-radius: 24px;
@@ -325,7 +349,7 @@ ul {
 .video-placeholder img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* تملأ البوكس بالكامل */
+    object-fit: cover;
     border-radius: 24px;
     position: relative;
     z-index: 2;
@@ -367,13 +391,13 @@ ul {
 .project-info p { color: var(--text-sec); margin-bottom: 1.5rem; line-height: 1.6; }
 .tech-stack { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
 .tech-stack span { background: rgba(var(--primary-rgb), 0.1); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(var(--primary-rgb), 0.2); }
-.project-btns { display: flex; gap: 1rem; }
+.project-btns { display: flex; gap: 1rem; /* FIX: Allow project buttons to wrap */ flex-wrap: wrap; }
 
 /* Testimonial Slider */
-/* Feedback Grid */
+/* FIX: Feedback Grid - Disable horizontal slider behavior on mobile */
 .slider-container{
     width:100%;
-    overflow:visible;
+    overflow:hidden; /* FIX: Hide overflow to prevent horizontal scroll from slider */
 }
 
 .slider-track{
@@ -384,6 +408,9 @@ ul {
 
 .testimoniall-card{
     width:100%;
+    /* FIX: Ensure cards don't overflow their grid cell */
+    box-sizing: border-box;
+    overflow: hidden;
 }
 .user-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
 .avatar-placeholder { width: 60px; height: 60px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--text-sec); }
@@ -412,20 +439,46 @@ ul {
     margin: 5px 0; transition: 0.3s;
 }
 
+/* ==========================================================================
+   TABLET BREAKPOINT (max-width: 1024px)
+   ========================================================================== */
 @media (max-width: 1024px) {
     .hero-section { flex-direction: column; text-align: center; margin-top: 4rem; }
     .hero-btns { justify-content: center; }
     .about-grid, .grid-layout-2 { grid-template-columns: 1fr; }
     .grid-layout-3 { grid-template-columns: repeat(2, 1fr); }
     .main-heading { font-size: 4rem; }
+
+    /* FIX: Reduce theme toggle right offset on tablets */
+    .theme-toggle { right: 2rem; }
+
+    /* FIX: Reduce content padding on tablets */
+    .content {
+        padding: 0 3%;
+    }
+
+    /* FIX: Stats grid to 2 columns on tablet */
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* FIX: Feedback slider to 2 columns on tablet */
+    .slider-track {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
+/* ==========================================================================
+   MOBILE BREAKPOINT (max-width: 768px)
+   ========================================================================== */
 @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); width: 280px; }
     .sidebar.open { transform: translateX(0); }
-    .content { margin-left: 0; padding: 0 1.5rem; }
+    .content { margin-left: 0; padding: 0 1.5rem; width: 100%; }
+
     .mobile-menu-btn { display: block; }
-    .theme-toggle { top: 1.5rem; right: 1.5rem; width: 45px; height: 45px; }
+
+    /* FIX: Theme toggle button - reduce right offset so it stays visible on mobile */
+    .theme-toggle { top: 1.5rem; right: 1rem; width: 45px; height: 45px; }
+
     .cert-card { flex-direction: column; text-align: center; }
     .cert-card .img-placeholder { width: 100%; height: 200px; }
     .grid-layout-3 { grid-template-columns: 1fr; }
@@ -433,4 +486,141 @@ ul {
     .cursor, .cursor-follower { display: none; } /* Disable custom cursor on mobile */
     body { cursor: auto; }
     .btn, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+
+    /* FIX: Feedback slider - stack cards vertically on mobile (disable horizontal slider) */
+    .slider-track {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .testimoniall-card {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* FIX: Reduce section padding on mobile */
+    .section { padding: 4rem 0; }
+
+    /* FIX: Reduce hero heading on mobile */
+    .main-heading { font-size: 2.5rem; }
+
+    /* FIX: Stats grid to single column on mobile */
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* FIX: Reduce glass card padding on mobile */
+    .glass-card { padding: 1.5rem; }
+
+    /* FIX: Reduce hero visual alignment on mobile */
+    .hero-visual { justify-content: center; }
+    .video-placeholder { max-width: 300px; }
+}
+
+/* ==========================================================================
+   SMALL MOBILE BREAKPOINT (max-width: 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+    /* FIX: Further reduce theme toggle position for very small screens */
+    .theme-toggle { top: 1rem; right: 0.5rem; width: 40px; height: 40px; }
+    .theme-toggle svg { width: 18px; height: 18px; }
+
+    /* FIX: Main heading scales down further */
+    .main-heading { font-size: 2rem; }
+
+    /* FIX: Reduce content padding for very small screens */
+    .content { padding: 0 1rem; }
+
+    /* FIX: Stats grid to single column on very small screens */
+    .stats-grid { grid-template-columns: 1fr; }
+
+    /* FIX: Section header font size reduction */
+    .section-header h2 { font-size: 1.8rem; }
+
+    /* FIX: Hero buttons stack vertically */
+    .hero-btns { flex-direction: column; align-items: center; }
+    .hero-btns .btn { width: 100%; max-width: 250px; }
+
+    /* FIX: Hero description text size */
+    .hero-desc { font-size: 1rem; }
+
+    /* FIX: Typewriter container alignment */
+    .typewriter-container { justify-content: center; font-size: 1rem; }
+
+    /* FIX: Glass card further reduce padding */
+    .glass-card { padding: 1.2rem; }
+
+    /* FIX: Project info padding reduction */
+    .project-info { padding: 1.2rem; }
+
+    /* FIX: Project buttons stack */
+    .project-btns { flex-direction: column; }
+    .project-btns .btn { width: 100%; }
+
+    /* FIX: About grid single column */
+    .about-grid { grid-template-columns: 1fr; }
+
+    /* FIX: Reduce spacing between sections */
+    .section { padding: 3rem 0; }
+
+    /* FIX: Avatar placeholder scales down */
+    .avatar-placeholder { width: 50px; height: 50px; }
+
+    /* FIX: Cert card image sizing */
+    .cert-card .img-placeholder { height: 180px; }
+
+    /* FIX: Video placeholder smaller on tiny screens */
+    .video-placeholder { max-width: 250px; }
+
+    /* FIX: Testimonial card text size */
+    .testimonial-card p { font-size: 1rem; }
+}
+
+/* ==========================================================================
+   VERY SMALL SCREEN BREAKPOINT (max-width: 320px)
+   ========================================================================== */
+@media (max-width: 320px) {
+    /* FIX: Theme toggle minimal size for 320px screens */
+    .theme-toggle { top: 0.5rem; right: 0.3rem; width: 36px; height: 36px; }
+    .theme-toggle svg { width: 16px; height: 16px; }
+
+    /* FIX: Main heading even smaller */
+    .main-heading { font-size: 1.6rem; }
+
+    /* FIX: Content padding minimal */
+    .content { padding: 0 0.75rem; }
+
+    /* FIX: Mobile menu button adjustment */
+    .mobile-menu-btn { top: 0.8rem; left: 0.8rem; width: 40px; height: 40px; }
+
+    /* FIX: Sidebar width on very small screens */
+    .sidebar { width: 260px; }
+
+    /* FIX: Section header */
+    .section-header h2 { font-size: 1.5rem; }
+    .section-header { margin-bottom: 2rem; }
+
+    /* FIX: Hero greeting */
+    .greeting { font-size: 1rem; }
+
+    /* FIX: Stats grid items */
+    .stat-item span { font-size: 1.5rem; }
+    .stat-item p { font-size: 0.8rem; }
+
+    /* FIX: Glass card minimal padding */
+    .glass-card { padding: 1rem; }
+
+    /* FIX: Section minimal padding */
+    .section { padding: 2rem 0; }
+
+    /* FIX: Video placeholder */
+    .video-placeholder { max-width: 220px; }
+
+    /* FIX: Play icon scale */
+    .play-icon { width: 45px; height: 45px; }
+
+    /* FIX: Nav link padding reduction */
+    .nav-link { padding: 0.8rem 1rem; }
+
+    /* FIX: Brand name size */
+    .name { font-size: 1.2rem; }
+    .logo { width: 50px; height: 50px; font-size: 1.2rem; }
 }
